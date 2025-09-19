@@ -1,0 +1,763 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <ctype.h>
+
+typedef struct Joueur
+{
+    int Id;
+    int randID;
+    char name[50];
+    char prenom[50];
+    int M;
+    char poste[50];
+    int age;
+    int buts;
+} Joueur;
+
+int x = 0;
+Joueur T[60];
+Joueur K[60] = {{1, 101, "Smith", "John", 7, "Forward", 25, 12},
+                {2, 102, "Doe", "Jane", 10, "Midfielder", 22, 5},
+                {3, 103, "Brown", "Charlie", 5, "Defender", 28, 2},
+                {4, 104, "Taylor", "Alice", 9, "Forward", 30, 20},
+                {5, 105, "Wilson", "Bob", 3, "Goalkeeper", 27, 0},
+                {6, 106, "Johnson", "Eve", 8, "Midfielder", 24, 7},
+                {7, 107, "Lee", "David", 11, "Forward", 26, 15},
+                {8, 108, "Martin", "Grace", 2, "Defender", 29, 1},
+                {9, 109, "Clark", "Hannah", 4, "Midfielder", 23, 6},
+                {10, 110, "Lewis", "Ian", 6, "Defender", 31, 3}};
+int P = 0;
+char newp[50];
+int newa;
+int newb;
+char postes[4][20] = {"gardien", "defenseur", "milieu", "attaquant"};
+
+void AjoutJouer()
+{
+
+    Joueur J;
+    int op;
+    int numP = 0;
+    int choix;
+
+    printf("type 1 to add one player, or 2 to add multiple ones: \n");
+    scanf("%d", &op);
+    getchar();
+
+    switch (op)
+    {
+    case 1:
+
+        printf("Enter 1 to generate an Id: \n");
+        scanf("%d", &J.Id);
+        getchar();
+
+        if (J.Id == 1)
+        {
+            J.randID = rand() % 40;
+        }
+
+        printf("Your player Id is : %d\n", J.randID);
+
+        printf("Entrer le nom du joueur: \n");
+        fgets(J.name, sizeof(J.name), stdin);
+        J.name[strcspn(J.name, "\n")] = '\0';
+
+        printf("Entrer le prenom du joueur: \n");
+        fgets(J.prenom, sizeof(J.prenom), stdin);
+        J.prenom[strcspn(J.prenom, "\n")] = '\0';
+
+        printf("Entrer le Maillot du joueur: \n");
+        scanf("%d", &J.M);
+        getchar();
+
+        printf("Entrer le poste du joueur: \n");
+        fgets(J.poste, sizeof(J.poste), stdin);
+        J.poste[strcspn(J.poste, "\n")] = '\0';
+
+        do
+        {
+        age:
+            printf("Entrer l'age du joueur: \n");
+            scanf("%d", &J.age);
+            getchar();
+            break;
+        } while (J.age > 16 || J.age < 50);
+        if (J.age < 16 || J.age > 50)
+        {
+            goto age;
+            break;
+        }
+
+        printf("Entrer les buts du joueur: \n");
+        scanf("%d", &J.buts);
+        getchar();
+
+        T[P] = J;
+        P++;
+        for (int i = 0; i < P; i++)
+        {
+            if (T[i].randID == T[i + 1].randID)
+            {
+                T[i].randID = rand() % 40;
+            }
+        }
+        for (int i = 0; i < P; i++)
+        {
+            printf("Player %d Age: %d\n", i + 1, T[i].age);
+            printf("Player %d ID %d\n", i + 1, T[i].randID);
+        }
+        break;
+
+    case 2:
+
+        printf("enter how many players you wanna add: \n");
+        scanf("%d", &numP);
+        getchar();
+
+        for (int i = P; i < P + numP; i++)
+        {
+            Joueur J;
+
+            printf("Enter 1 to generate an Id: \n");
+            scanf("%d", &choix);
+            getchar();
+
+            if (choix == 1)
+            {
+                T[i].randID = rand() % 100;
+                printf("Your player Id is : %d\n", T[i].randID);
+            }
+
+            printf("Entrer le nom du joueur: \n");
+            fgets(T[i].name, sizeof(T[i].name), stdin);
+            T[i].name[strcspn(T[i].name, "\n")] = '\0';
+
+            printf("Entrer le prenom du joueur: \n");
+            fgets(T[i].prenom, sizeof(T[i].prenom), stdin);
+            T[i].prenom[strcspn(T[i].prenom, "\n")] = '\0';
+
+            printf("Entrer le Maillot du joueur: \n");
+            scanf("%d", &T[i].M);
+            getchar();
+
+            printf("Entrer le poste du joueur: \n");
+            fgets(T[i].poste, sizeof(T[i].poste), stdin);
+            T[i].poste[strcspn(T[i].poste, "\n")] = '\0';
+
+            printf("Entrer l'age du joueur: \n");
+            scanf("%d", &T[i].age);
+            getchar();
+
+            printf("Entrer les buts du joueur: \n");
+            scanf("%d", &T[i].buts);
+            getchar();
+        }
+        P += numP;
+
+        for (int i = 0; i < P; i++)
+        {
+            printf("Player %d Age: %d\n", i + 1, T[i].age);
+            printf("Player %d ID %d\n", i + 1, T[i].randID);
+        }
+        break;
+
+    default:
+        printf("ERROR AKHOYA");
+        break;
+    }
+}
+
+void echange(Joueur *a, Joueur *b)
+{
+
+    Joueur temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void Alphabie_TR(Joueur T[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (strcmp(T[j].name, T[j + 1].name) > 0)
+            {
+                echange(&T[j], &T[j + 1]);
+            }
+        }
+    }
+}
+
+void Age_TR(Joueur L[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (L[j].age > L[j + 1].age)
+            {
+                echange(&L[j], &L[j + 1]);
+            }
+        }
+    }
+}
+
+void Poste_TR(Joueur K[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (strcmp(K[j].poste, K[j + 1].poste) > 0)
+            {
+                echange(&K[j], &K[j + 1]);
+            }
+        }
+    }
+}
+
+int search_name()
+{
+    char n[50];
+
+    printf("Enter the name of the name of the player: \n");
+    scanf("%s", n);
+
+    for (int i = 0; i < P; i++)
+    {
+        if (strcmp(n, T[i].name) == 0)
+        {
+            printf("\nJoueur %d:\n", i + 1);
+            printf("  ID       : %d\n", T[i].randID);
+            printf("  Nom      : %s\n", T[i].name);
+            printf("  Prenom   : %s\n", T[i].prenom);
+            printf("  Maillot  : %d\n", T[i].M);
+            printf("  Poste    : %s\n", T[i].poste);
+            printf("  Age      : %d\n", T[i].age);
+            printf("  Buts     : %d\n", T[i].buts);
+
+            return i;
+
+            break;
+        }
+    }
+    return -1;
+}
+
+int search_id()
+{
+
+    int id;
+    printf("Entrer votre ID: \n");
+    scanf("%d", &id);
+
+    for (int i = 0; i < P; i++)
+    {
+        if (id == T[i].randID)
+        {
+            printf("  ID       : %d\n", T[i].randID);
+            printf("  Nom      : %s\n", T[i].name);
+            printf("  Prenom   : %s\n", T[i].prenom);
+            printf("  Maillot  : %d\n", T[i].M);
+            printf("  Poste    : %s\n", T[i].poste);
+            printf("  Age      : %d\n", T[i].age);
+            printf("  Buts     : %d\n", T[i].buts);
+            printf("\n");
+
+            return i;
+        }
+    }
+    return -1;
+}
+
+int search()
+{
+    int op;
+    int i;
+
+    printf("1.Search with name\n");
+    printf("2.Search with ID\n");
+    scanf("%d", &op);
+
+    switch (op)
+    {
+    case 1:
+        return search_name();
+        break;
+
+    case 2:
+        return search_id();
+        break;
+
+    default:
+        return -1;
+    }
+}
+void Poste_mod()
+{
+    char ch;
+    int indx = search();
+
+    do
+    {
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (strcmp(newp, postes[i]) == 0)
+            {
+                if (indx == -1)
+                {
+                    printf("Player not found!!!. Try again");
+                    continue;
+
+                newP:
+
+                    printf("Enter the new poste (gardien, defenseur, milieu, attaquant: \n");
+                    scanf("%s", newp);
+                    strcpy(T[indx].poste, newp);
+                    getchar();
+
+                    printf("  ID       : %d\n", T[indx].randID);
+                    printf("  Nom      : %s\n", T[indx].name);
+                    printf("  Prenom   : %s\n", T[indx].prenom);
+                    printf("  Maillot  : %d\n", T[indx].M);
+                    printf("  Poste    : %s\n", T[indx].poste);
+                    printf("  Age      : %d\n", T[indx].age);
+                    printf("  Buts     : %d\n", T[indx].buts);
+
+                    printf("You want to continue? (Y/N):\n");
+                    scanf("%c", &ch);
+                    getchar();
+                    break;
+                }
+            }
+            else
+            {
+                printf("Not a poste!!!");
+                goto newP;
+                break;
+            }
+        }
+
+    } while (ch == 'Y' || ch == 'y');
+}
+void Age_mod()
+{
+    char ch;
+    int indx = search();
+
+    do
+    {
+        if (indx == -1)
+        {
+            printf("Player not found!!!. Try again");
+            continue;
+        }
+
+    newP:
+
+        printf("Enter the new age: \n");
+        scanf("%d", &newa);
+        T[indx].age = newa;
+        getchar();
+
+        printf("  ID       : %d\n", T[indx].randID);
+        printf("  Nom      : %s\n", T[indx].name);
+        printf("  Prenom   : %s\n", T[indx].prenom);
+        printf("  Maillot  : %d\n", T[indx].M);
+        printf("  Poste    : %s\n", T[indx].poste);
+        printf("  Age      : %d\n", T[indx].age);
+        printf("  Buts     : %d\n", T[indx].buts);
+
+        printf("You want to continue? (Y/N):\n");
+        scanf("%c", &ch);
+        getchar();
+
+    } while (ch == 'Y' || ch == 'y');
+}
+
+void But_mod()
+{
+    char ch;
+    int indx = search();
+
+    do
+    {
+        if (indx == -1)
+        {
+            printf("Player not found!!!. Try again");
+            continue;
+        }
+
+    newP:
+
+        printf("Enter the new goal count: \n");
+        scanf("%d", &newb);
+        T[indx].buts = newb;
+        getchar();
+
+        printf("  ID       : %d\n", T[indx].randID);
+        printf("  Nom      : %s\n", T[indx].name);
+        printf("  Prenom   : %s\n", T[indx].prenom);
+        printf("  Maillot  : %d\n", T[indx].M);
+        printf("  Poste    : %s\n", T[indx].poste);
+        printf("  Age      : %d\n", T[indx].age);
+        printf("  Buts     : %d\n", T[indx].buts);
+
+        printf("You want to continue? (Y/N):\n");
+        scanf("%c", &ch);
+        getchar();
+
+    } while (ch == 'Y' || ch == 'y');
+}
+
+void ModificationA()
+{
+    int op;
+
+    printf("1.Poste mod\n");
+    printf("2.Age mod\n");
+    printf("3.Goals count mod\n");
+    scanf("%d", &op);
+
+    switch (op)
+    {
+    case 1:
+        Poste_mod();
+        break;
+
+    case 2:
+        Age_mod();
+        break;
+
+    case 3:
+        But_mod();
+        break;
+    }
+}
+
+void deletes()
+{
+    int id;
+
+    printf("Enter the ID of the player you wanna delete:\n");
+    scanf("%d", &id);
+    for (int i = 0; i < P; i++)
+    {
+        if (id == T[i].randID)
+        {
+            for (int j = i; j < P - 1; j++)
+            {
+                T[j] = T[j + 1];
+            }
+            P--;
+        }
+    }
+}
+
+void AffichageA()
+{
+    int al;
+
+    printf("1.Trie de nom \n");
+    printf("2.Trie de age\n");
+    printf("2.Trie de poste\n");
+    printf("0.Pour quitter\n");
+    scanf("%d", &al);
+    getchar();
+
+    switch (al)
+    {
+    case 1:
+
+        Alphabie_TR(T, P);
+
+        printf("Players sorted alphabetically:\n");
+
+        for (int i = 0; i < P; i++)
+        {
+
+            printf("\nJoueur %d:\n", i + 1);
+            printf("  ID       : %d\n", T[i].randID);
+            printf("  Nom      : %s\n", T[i].name);
+            printf("  Prenom   : %s\n", T[i].prenom);
+            printf("  Maillot  : %d\n", T[i].M);
+            printf("  Poste    : %s\n", T[i].poste);
+            printf("  Age      : %d\n", T[i].age);
+            printf("  Buts     : %d\n", T[i].buts);
+        }
+        break;
+
+    case 2:
+        Age_TR(T, P);
+
+        printf("Players sorted by age:\n");
+
+        for (int i = 0; i < P; i++)
+        {
+
+            printf("\nJoueur %d:\n", i + 1);
+            printf("  ID       : %d\n", T[i].randID);
+            printf("  Nom      : %s\n", T[i].name);
+            printf("  Prenom   : %s\n", T[i].prenom);
+            printf("  Maillot  : %d\n", T[i].M);
+            printf("  Poste    : %s\n", T[i].poste);
+            printf("  Age      : %d\n", T[i].age);
+            printf("  Buts     : %d\n", T[i].buts);
+        }
+        break;
+
+    case 3:
+        Poste_TR(T, P);
+        printf("Players grouped by position: \n");
+
+        char curr[40][50];
+        int count = 0;
+
+        for (int i = 0; i < P; i++)
+        {
+            int seen = 0;
+            for (int j = 0; j < count; j++)
+            {
+                if (strcmp(curr[j], T[i].poste) == 0)
+                {
+                    seen = 1;
+                    break;
+                }
+            }
+            if (seen == 0)
+            {
+                strcpy(curr[count], T[i].poste);
+                count++;
+
+                printf("\nPosition: %s\n", T[i].poste);
+                for (int k = 0; k < count; k++)
+                {
+
+                    if (strcmp(T[k].poste, T[i].poste) == 0)
+                    {
+                        printf("  ID       : %d\n", T[i].randID);
+                        printf("  Nom      : %s\n", T[i].name);
+                        printf("  Prenom   : %s\n", T[i].prenom);
+                        printf("  Maillot  : %d\n", T[i].M);
+                        printf("  Age      : %d\n", T[i].age);
+                        printf("  Buts     : %d\n", T[i].buts);
+                        printf("\n");
+                    }
+                }
+            }
+        }
+        break;
+
+    case 0:
+        break;
+
+    default:
+        printf("error");
+        break;
+    }
+}
+
+void nombre_ttl()
+{
+    printf("Le nombre total des joueurs est: %d", P);
+}
+
+void moyenne()
+{
+    int sum = 0;
+    int moy;
+
+    for (int i = 0; i < P; i++)
+    {
+        sum += T[i].age;
+    }
+    moy = sum / P;
+
+    printf("Le moyenne d'age des joueuers est: %d\n", moy);
+}
+
+void X_buts()
+{
+    int x;
+    int i;
+
+    printf("Enter the number of goals you want: \n");
+    scanf("%d", &x);
+
+    for (i = 0; i < P; i++)
+    {
+        if (x < T[i].buts)
+        {
+        goal:
+            printf("\nJoueur %d:\n", i + 1);
+            printf("  ID       : %d\n", T[i].randID);
+            printf("  Nom      : %s\n", T[i].name);
+            printf("  Prenom   : %s\n", T[i].prenom);
+            printf("  Maillot  : %d\n", T[i].M);
+            printf("  Poste    : %s\n", T[i].poste);
+            printf("  Age      : %d\n", T[i].age);
+            printf("  Buts     : %d\n", T[i].buts);
+        }
+    }
+}
+
+void meilieur()
+{
+    int max = T[0].buts;
+    int idxm = 0;
+
+    for (int i = 0; i < P; i++)
+    {
+
+        if (T[i].buts > max)
+        {
+            max = T[i].buts;
+            idxm = i;
+        }
+    }
+    printf("The best goaler is %s with %d goals", T[idxm].name, T[idxm].buts);
+}
+
+void jage()
+{
+    int jeune = T[0].age;
+    int age = T[0].age;
+    int idxj = 0;
+    int idxa = 0;
+
+    for (int i = 0; i < P; i++)
+    {
+
+        if (jeune > T[i].age)
+        {
+            jeune = T[i].age;
+            idxj = i;
+        }
+
+        if (age < T[i].age)
+        {
+            age = T[i].age;
+            idxa = i;
+        }
+    }
+    printf("the youngest player is %s with the age of %d\n", T[idxj].name, T[idxj].age);
+    printf("The oldest player is %s with the age of %d\n", T[idxa].name, T[idxa].age);
+}
+
+int main()
+{
+    srand(time(NULL));
+    int op;
+    int cont;
+
+    do
+    {
+
+    menu:
+        printf("        ********MENU********\n");
+
+        printf("\n11.declarer un predefini tableau\n");
+        printf("-----------------------------------\n");
+        printf("1.Ajouter Joueurs\n");
+        printf("-----------------------------------\n");
+        printf("2.Afficher les Joueurs\n");
+        printf("-----------------------------------\n");
+        printf("3.Modifier un Joueur\n");
+        printf("-----------------------------------\n");
+        printf("4.Supprimer un Joueur\n");
+        printf("-----------------------------------\n");
+        printf("5.Rechercher un Joueur\n");
+        printf("-----------------------------------\n");
+        printf("6.Nombre total des joueurs\n");
+        printf("-----------------------------------\n");
+        printf("7.le moyenne d'ages des joueurs\n");
+        printf("-----------------------------------\n");
+        printf("8.Afficher les joueurs ayant marqué plus de X buts \n");
+        printf("-----------------------------------\n");
+        printf("9.Afficher le meilleur buteur\n");
+        printf("-----------------------------------\n");
+        printf("10.Afficher le joueur le plus jeune et le plus âgé.\n");
+        printf("-----------------------------------\n");
+        printf("0.Pour quitter\n");
+        printf("-->");
+        scanf("%d", &op);
+        break;
+    } while (op != 0);
+
+    switch (op)
+    {
+    case 1:
+        AjoutJouer();
+        goto menu;
+        break;
+
+    case 2:
+        AffichageA();
+        goto menu;
+        break;
+
+    case 3:
+        ModificationA();
+        goto menu;
+        break;
+
+    case 4:
+        deletes();
+        goto menu;
+        break;
+
+    case 5:
+        char newn[50];
+        search(newn);
+        goto menu;
+        break;
+
+    case 6:
+        nombre_ttl();
+        goto menu;
+        break;
+
+    case 7:
+        moyenne();
+        goto menu;
+        break;
+
+    case 8:
+        X_buts();
+        goto menu;
+        break;
+
+    case 9:
+        meilieur();
+        goto menu;
+        break;
+
+    case 10:
+        jage();
+        goto menu;
+        break;
+
+    case 11:
+        for (int i = 0; i < 60; i++)
+        {
+            T[i] = K[i];
+        }
+        P = 10;
+        goto menu;
+        break;
+
+    case 0:
+        break;
+
+    default:
+        printf("ERROR!!!\n");
+        break;
+    }
+
+    return 0;
+}
